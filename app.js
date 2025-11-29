@@ -1,7 +1,15 @@
-const express = require('express');
+import express from "express";
+import mongoose from "mongoose";
+import dontenv from 'dotenv';
 const app = express();
 
-const port = process.env.PORT || 3090
+dontenv.config({
+    path: ".env"
+});
+
+const port = process.env.PORT || 3090;
+const mongoURL = process.env.DATABASE_CON_STRING;
+
 app.use("/", async (req, res) => {
     try {
         return res.status(200).send({
@@ -15,6 +23,13 @@ app.use("/", async (req, res) => {
         })
     }
 });
+
+mongoose.connect(mongoURL)
+    .then(() => {
+        console.log('Database connected successfully.');
+    }).catch((err) => {
+        console.log("Unable to connect to the database.");
+    })
 
 app.listen(port, () => {
     console.log("Backend ratelimit running on " + port);
