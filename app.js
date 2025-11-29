@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dontenv from 'dotenv';
+import { rateLimiter } from "./middleware/rateLimiter.js";
 const app = express();
 
 dontenv.config({
@@ -10,19 +11,23 @@ dontenv.config({
 const port = process.env.PORT || 3090;
 const mongoURL = process.env.DATABASE_CON_STRING;
 
-app.use("/", async (req, res) => {
-    try {
-        return res.status(200).send({
-            status: true,
-            message: "Success."
-        })
-    } catch (error) {
-        return res.status(500).send({
-            status: false,
-            message: "Internal server error"
-        })
-    }
-});
+
+
+app.use("/data",
+    rateLimiter,
+    async (req, res) => {
+        try {
+            return res.status(200).send({
+                status: true,
+                message: "Success."
+            })
+        } catch (error) {
+            return res.status(500).send({
+                status: false,
+                message: "Internal server error"
+            })
+        }
+    });
 
 mongoose.connect(mongoURL)
     .then(() => {

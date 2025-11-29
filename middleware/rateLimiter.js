@@ -1,4 +1,4 @@
-import RateLimit from "../models/RateLimit.js";
+import RateLimit from "../schema/rateLimit.schema.js";
 import Constants from '../constants/constant.js'
 
 const RATE_LIMIT = Constants.MainConfig.RATE_LIMIT;
